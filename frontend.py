@@ -10,9 +10,18 @@ main_nav = option_menu("Career Connect", ["Job Search", 'Job Apply', 'Profile', 
 
 if main_nav == "Job Search":
     st.title("Job Search")
-    st.text_input("Enter your job search query here:")
-    # search_jobs_adzuna(, 10, st.title)
-    st.button("Search")
+    job_query = st.text_input("Enter your job search query here:")
+    jobs = search_jobs_adzuna('07008', 10, job_query)
+    if st.button("Search"):
+        if jobs:
+            for job in jobs:
+                st.subheader(job.get("title", "No Title"))
+                st.write(f"**Company:** {job.get('company', 'N/A')}")
+                st.write(f"**Location:** {job.get('location', 'N/A')}")
+                st.write(f"**Description:** {job.get('description', '')[:200]}...")
+                st.markdown(f"[Apply Here]({job.get('redirect_url', '#')})")
+        else:
+            st.write("No jobs found.")
 
 
 
