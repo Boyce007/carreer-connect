@@ -3,8 +3,8 @@ import requests
 
 from streamlit_option_menu import option_menu
 
-from Backend.Backend import search_jobs_adzuna
-from Backend.Backend import search_jobs_linkedin
+from Backend import search_jobs_adzuna
+from Backend import search_jobs_linkedin
 
 main_nav = option_menu("Career Connect", ["Job Search", 'Job Apply', 'Profile', 'Favorites'], orientation = "horizontal", icons=['house', 'gear'], menu_icon="cast", default_index=1)
 
