@@ -53,6 +53,19 @@ signOutButton.addEventListener("click", () => {
         });
 });
 
+const db = firebase.firestore();
+
+// Save user data (e.g., profile info)
+function saveUserData(userId, userData) {
+    db.collection('users').doc(userId).set(userData)
+        .then(() => {
+            console.log("User data saved!");
+        })
+        .catch((error) => {
+            console.error("Error saving user data: ", error);
+        });
+}
+
 // Check Authentication State
 auth.onAuthStateChanged(user => {
     if (user) {
@@ -63,3 +76,45 @@ auth.onAuthStateChanged(user => {
         signOutButton.style.display = "none";
     }
 });
+
+const db = firebase.firestore();
+
+// Save user data (e.g., profile info)
+function saveUserData(userId, userData) {
+    db.collection('users').doc(userId).set(userData)
+        .then(() => {
+            console.log("User data saved!");
+        })
+        .catch((error) => {
+            console.error("Error saving user data: ", error);
+        });
+}
+
+const storage = firebase.storage();
+
+// Upload resume
+function uploadResume(file) {
+    const userId = firebase.auth().currentUser.uid;
+    const storageRef = storage.ref().child(`resumes/${userId}/${file.name}`);
+    
+    storageRef.put(file).then((snapshot) => {
+        console.log("Resume uploaded successfully!");
+        // After uploading, you can get the file URL and save it to Firestore
+        storageRef.getDownloadURL().then((url) => {
+            saveResumeURLToUserProfile(userId, url);
+        });
+    }).catch((error) => {
+        console.error("Error uploading resume: ", error);
+    });
+}
+
+// Save resume URL to Firestore
+function saveResumeURLToUserProfile(userId, resumeURL) {
+    db.collection('users').doc(userId).update({
+        resume: resumeURL
+    }).then(() => {
+        console.log("Resume URL saved to user profile!");
+    }).catch((error) => {
+        console.error("Error saving resume URL: ", error);
+    });
+}
