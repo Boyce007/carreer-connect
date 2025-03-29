@@ -8,6 +8,17 @@ from streamlit_option_menu import option_menu
 from Backend import search_jobs_adzuna
 from Backend import search_jobs_linkedin
 main_nav = option_menu("Career Connect", ["Job Search", 'Profile', 'Resume Review'], orientation = "horizontal", icons=['house', 'gear'], menu_icon="cast", default_index=1)
+SKILL_KEYWORDS = [
+    "Python", "Java", "C++", "JavaScript", "SQL", "HTML", "CSS", "AWS", "Azure",
+    "Django", "Flask", "React", "Node.js", "Machine Learning", "Deep Learning",
+    "Data Science", "Agile", "DevOps", "Git", "Docker", "Kubernetes","Data Structures"
+]
+def extract_skills(resume_text):
+    skills = []
+    for skill in SKILL_KEYWORDS:
+        if skill.lower() in resume_text.lower():
+            skills.append(skill)
+    return skills
 
 if main_nav == "Job Search":
     st.title("Job Search")
@@ -22,6 +33,8 @@ if main_nav == "Job Search":
                 location = job.get('location',{}).get("area","N/A")
                 st.write(f"**Location:** {location}")
                 st.write(f"**Description:** {job.get('description', '')[:200]}...")
+                st.markdown(f"[Apply Here]({job.get('redirect_url', '#')})")
+
         else:
             st.write("No jobs found.")
 
@@ -52,6 +65,24 @@ elif main_nav == "Resume Review":
 
         st.subheader("📝 Extracted Resume Text:")
         st.write(text)
+        skills = extract_skills(text)
+        for skill in skills:
+            jobs = search_jobs_adzuna('07008', 10,skill)
+            if jobs:
+                for job in jobs:
+                    st.subheader(job.get("title", "No Title"))
+                    company_name = job.get("company", {}).get("display_name", "N/A")
+                    st.write(f"**Company:** {company_name}")
+                    location = job.get('location',{}).get("area","N/A")
+                    st.write(f"**Location:** {location}")
+                    st.write(f"**Description:** {job.get('description', '')[:200]}...")
+                    st.markdown(f"[Apply Here]({job.get('redirect_url', '#')})")
+
+            else:
+                st.write("No jobs found.")
+            
+            
+
 
         if st.button("🔍 Analyze Resume with AI"):
             st.info("Thinking... 🔄")
@@ -67,6 +98,8 @@ elif main_nav == "Resume Review":
             Resume:
             {text}
             """
+
+                
 
             result = query({"inputs": prompt})
 
@@ -101,5 +134,4 @@ elif main_nav == "Profile":
         bio = st.text_area("Bio")
         skills = st.text_area("Skills")
         location = st.text_input("Location")
-        if st.button("Experience"):
-            st.switch_page("pages/experience.py")
+        
