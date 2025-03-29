@@ -77,7 +77,6 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-const db = firebase.firestore();
 
 // Save user data (e.g., profile info)
 function saveUserData(userId, userData) {
