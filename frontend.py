@@ -15,6 +15,8 @@ if main_nav == "Job Search":
     st.button("Search")
 
 
+
+
 elif main_nav == "Job Apply":
     st.title("Job Apply")
     st.write("This is the Job Apply page.")
